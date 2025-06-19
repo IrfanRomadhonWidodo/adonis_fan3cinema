@@ -1,8 +1,9 @@
 <p align="center">
   <a href="https://adonisjs.com" target="_blank">
-    <img src="https://adonisjs.com/images/logo.svg" width="200" alt="AdonisJS Logo">
+    <img src="https://raw.githubusercontent.com/adonisjs/adonisjs.com/main/public/images/logo.svg" width="200" alt="AdonisJS Logo">
   </a>
 </p>
+
 
 <p align="center">
   <a href="https://github.com/adonisjs/core/actions/workflows/test.yml">
