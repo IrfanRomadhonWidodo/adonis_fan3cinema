@@ -26,3 +26,8 @@ router.get('/', ({ response, auth }) => {
   }
   return response.redirect('/login')
 })
+
+router.get('/admin', ({ view }) => {
+  return view.render('admin/page_admin')
+}).as('admin.page').use(middleware.auth())
+
