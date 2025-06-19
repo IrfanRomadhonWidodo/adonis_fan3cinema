@@ -1,8 +1,7 @@
 <p align="center">
-  <a href="https://adonisjs.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/adonisjs/adonisjs.com/main/public/images/logo.svg" width="200" alt="AdonisJS Logo">
-  </a>
+  <img src="public/images/adonis-logo.jpg" width="200" alt="AdonisJS Logo">
 </p>
+
 
 
 <p align="center">
