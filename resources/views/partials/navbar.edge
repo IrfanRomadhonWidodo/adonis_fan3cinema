@@ -4,7 +4,6 @@
     <div class="flex justify-between items-center h-16">
       {{-- Logo --}}
       <div class="flex items-center space-x-2">
-
         <svg
           class="h-8 w-8 text-blue-400"
           fill="none"
@@ -13,12 +12,12 @@
           stroke-width="2"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
         <span
           class="ml-2 text-2xl font-extrabold tracking-wide bg-gradient-to-r from-blue-400 via-white to-blue-500 text-transparent bg-clip-text"
         >
-          AdoFan3Cinema
+          AdonisApp
                 </span>
       </div>
 
@@ -48,7 +47,7 @@
         >
           Services
                 </a>
-        @if(auth)
+        @if(auth.user)
           <a
             href=""
             class="relative text-sm font-medium text-gray-300 transition duration-200
@@ -58,8 +57,8 @@
             Dashboard
                     </a>
         @endif
-          
-        @unless(auth)
+        
+        @unless(auth.user)
           <a
             href=""
             class="relative text-sm font-medium text-gray-300 transition duration-200
@@ -73,21 +72,21 @@
 
       {{-- Auth Menu --}}
       <div class="flex items-center space-x-4">
-        @if(auth)
+        @if(auth.user)
           {{-- Profile & Dropdown --}}
           <div class="relative" x-data="{ open: false }" @click.away="open = false">
             <div class="flex items-center space-x-2 cursor-pointer" @click="open = !open">
               <img
                 class="h-8 w-8 rounded-full border-2 border-blue-500"
-                src="https://ui-avatars.com/api/?name={{ auth.fullName || auth.email }}&background=3b82f6&color=fff"
+                src="https://ui-avatars.com/api/?name={{ auth.user.fullName || auth.user.email }}&background=3b82f6&color=fff"
                 alt="Avatar"
               />
               <div class="text-sm text-white hidden lg:block">
                 <div class="font-medium">
-                  {{ auth.fullName || auth.email }}
+                  {{ auth.user.fullName || auth.user.email }}
                 </div>
                 <div class="text-gray-400 text-xs">
-                  {{ auth.email }}
+                  {{ auth.user.email }}
                 </div>
               </div>
               {{-- Dropdown Arrow --}}
@@ -119,10 +118,10 @@
               {{-- Header Dropdown --}}
               <div class="px-4 py-3 border-b border-slate-700">
                 <p class="text-sm text-white font-medium">
-                  {{ auth.fullName || auth.email }}
+                  {{ auth.user.fullName || auth.user.email }}
                 </p>
                 <p class="text-xs text-gray-400 truncate">
-                  {{ auth.email }}
+                  {{ auth.user.email }}
                 </p>
               </div>
 
@@ -174,9 +173,9 @@
 
               {{-- Logout --}}
               <div class="py-2">
-                <form method="POST" action="">
+                <form method="POST" action="{{ route('auth.logout') }}">
                   {{ csrfField() }}
-                                    <button
+    <button
                     type="submit"
                     class="flex items-center w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300 transition duration-150"
                   >
@@ -187,10 +186,9 @@
                         stroke-width="2"
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
-
                     </svg>
                     Logout
-                                    </button>
+    </button>
                 </form>
               </div>
             </div>
@@ -261,7 +259,7 @@
       <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Home</a>
       <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">About</a>
       <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Services</a>
-      @if(auth)
+      @if(auth.user)
         <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Dashboard</a>
       @endif
     </div>

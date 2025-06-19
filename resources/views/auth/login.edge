@@ -18,11 +18,13 @@
 
       @if(flashMessages.has('notification'))
         @set('notification', flashMessages.get('notification'))
-          <div
-            class="mb-4 p-4 rounded {{ notification.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}"
-          >
-            {{ notification.message }}
-          </div>
+          @if(notification && notification.type && notification.message)
+            <div
+              class="mb-4 p-4 rounded {{ notification.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}"
+            >
+              {{ notification.message }}
+            </div>
+          @endif
         @endif
         
         <form action="{{ route('auth.login') }}" method="POST">
