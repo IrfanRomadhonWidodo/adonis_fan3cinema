@@ -1,12 +1,28 @@
-/*
-|--------------------------------------------------------------------------
-| Routes file
-|--------------------------------------------------------------------------
-|
-| The routes file is used for defining the HTTP routes.
-|
-*/
-
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 
-router.on('/').render('pages/home')
+const AuthController = () => import('#controllers/auth_controller')
+
+// Auth routes (hanya untuk guest/belum login)
+router.group(() => {
+  router.get('/login', [AuthController, 'showLogin']).as('auth.login.show')
+  router.post('/login', [AuthController, 'login']).as('auth.login')
+  router.get('/register', [AuthController, 'showRegister']).as('auth.register.show')  
+  router.post('/register', [AuthController, 'register']).as('auth.register')
+}).use(middleware.guest())
+
+// Logout route (hanya untuk yang sudah login)
+router.post('/logout', [AuthController, 'logout']).as('auth.logout').use(middleware.auth())
+
+// Protected routes
+router.get('/home', ({ view, auth }) => {
+  return view.render('home', { user: auth.user })
+}).as('home').use(middleware.auth())
+
+// Redirect root ke login jika belum login, ke home jika sudah login
+router.get('/', ({ response, auth }) => {
+  if (auth.user) {
+    return response.redirect('/home')
+  }
+  return response.redirect('/login')
+})
