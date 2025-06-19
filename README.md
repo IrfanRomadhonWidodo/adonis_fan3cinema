@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="public/images/adonis-logo.jpg" width="200" alt="AdonisJS Logo">
-</p>
+
 
 
 
