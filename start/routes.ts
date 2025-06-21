@@ -73,3 +73,15 @@ router.group(() => {
   router.delete('/studios/:id', [AdminStudioController, 'destroy']).as('admin.studios.destroy')
 }).prefix('/admin')
 
+
+
+import AdminGenreController from '#controllers/admin_genre_controller'
+
+// Tambahkan dalam group admin
+router.group(() => {
+  router.get('/genres', [AdminGenreController, 'index']).as('admin.genres.index')
+  router.post('/genres', [AdminGenreController, 'store']).as('admin.genres.store')
+  router.get('/genres/:id', [AdminGenreController, 'show']).as('admin.genres.show')
+  router.put('/genres/:id', [AdminGenreController, 'update']).as('admin.genres.update')
+  router.delete('/genres/:id', [AdminGenreController, 'destroy']).as('admin.genres.destroy')
+}).prefix('/admin').use(middleware.auth())

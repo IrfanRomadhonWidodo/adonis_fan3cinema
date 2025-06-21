@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Genre Manager | Adofan3Cinema
+    </title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com">
+      
+    </script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            spacing: {
+              128: "32rem"
+            }
+          }
+        }
+      };
+    </script>
+
+    <!-- Alpine JS -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
+      
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer>
+      
+    </script>
+
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="flex bg-gray-900 text-white min-h-screen" x-data="genreManager()" x-cloak>
+    @include('layouts/sidebar')
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-64 p-8 overflow-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-blue-400 mb-2">
+          Genre Manager
+        </h1>
+        <p class="text-gray-400">
+          Kelola genre film Anda
+        </p>
+      </div>
+
+      <!-- Add Button -->
+      <div class="mb-6">
+        <button
+          @click="openCreateModal()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center"
+        >
+          <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+          Tambah Genre
+      </button>
+      </div>
+
+      <!-- Genres Table -->
+      <div class="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
+        <div class="px-8 py-6 border-b border-gray-700">
+          <h2 class="text-2xl font-semibold text-blue-400">
+            Daftar Genre
+          </h2>
+        </div>
+
+        <div class="overflow-x-auto p-4">
+          <table class="w-full text-base">
+            <thead class="bg-gray-700">
+              <tr>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  ID
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Nama Genre
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Aksi
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+              @each(genre in genres)
+                <tr class="hover:bg-gray-700">
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ genre.id }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap font-medium text-white">
+                    {{ genre.nama_genre }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap font-medium">
+                    <div class="flex space-x-3">
+                      <button
+                        @click="openEditModal({{ genre.id }})"
+                        class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg flex items-center"
+                      >
+                        <i data-lucide="edit" class="w-4 h-4 mr-1"></i>Edit
+                    </button>
+                      <button
+                        @click="confirmDelete({{ genre.id }}, '{{ genre.nama_genre }}')"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center"
+                      >
+                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>Hapus
+                    </button>
+                    </div>
+                  </td>
+                </tr>
+              @else
+                <tr>
+                  <td colspan="3" class="px-8 py-12 text-center text-gray-400">
+                    <i data-lucide="database" class="w-16 h-16 mx-auto mb-4 opacity-50"></i>
+                    <p class="text-lg">
+                      Belum ada genre yang terdaftar
+                    </p>
+                  </td>
+                </tr>
+              @endeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Create/Edit Modal -->
+      <div
+        x-show="showModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        x-cloak
+      >
+        <div class="bg-gray-800 p-8 rounded-lg w-full max-w-lg mx-4 shadow-2xl">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-semibold text-blue-400" x-text="modalTitle">
+            </h3>
+            <button @click="closeModal()" class="text-gray-400 hover:text-white">
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
+
+          <form @submit.prevent="submitForm">
+            <div class="mb-8">
+              <label class="block text-lg font-medium text-gray-300 mb-3">Nama Genre</label>
+              <input
+                type="text"
+                name="namaGenre"
+                x-model="formData.namaGenre"
+                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                required
+              />
+            </div>
+
+            <div class="flex space-x-4">
+              <button
+                type="submit"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+                x-text="submitButtonText"
+              ></button>
+              <button
+                type="button"
+                @click="closeModal()"
+                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div
+        x-show="showDeleteModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        x-cloak
+      >
+        <div class="bg-gray-800 p-8 rounded-lg w-full max-w-lg mx-4 shadow-2xl">
+          <div class="text-center">
+            <i data-lucide="alert-triangle" class="w-20 h-20 text-red-500 mx-auto mb-6"></i>
+            <h3 class="text-2xl font-semibold text-white mb-4">
+              Konfirmasi Hapus
+            </h3>
+            <p class="text-gray-300 mb-8 text-lg">
+              Apakah Anda yakin ingin menghapus genre <span class="font-semibold text-blue-400" x-text="deleteGenreName"></span>?
+            <br />
+              <span class="text-red-400">Tindakan ini tidak dapat dibatalkan.</span>
+            </p>
+
+            <div class="flex space-x-4">
+              <button
+                @click="deleteGenre()"
+                class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Ya, Hapus</button>
+              <button
+                @click="closeDeleteModal()"
+                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Batal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function genreManager() {
+        return {
+          showModal: false,
+          showDeleteModal: false,
+          modalTitle: "",
+          formMethod: "POST",
+          submitButtonText: "",
+          deleteGenreName: "",
+          currentGenreId: null,
+          formData: {
+            namaGenre: ""
+          },
+          // Modal methods
+          openCreateModal() {
+            this.modalTitle = "Tambah Genre Baru";
+            this.formMethod = "POST";
+            this.submitButtonText = "Tambah Genre";
+            this.formData = {
+              namaGenre: ""
+            };
+            this.currentGenreId = null;
+            this.showModal = true;
+          },
+          async openEditModal(genreId) {
+            try {
+              const response = await fetch(`/admin/genres/${genreId}`);
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan data JSON yang valid");
+              }
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Gagal mengambil data genre");
+              }
+              const genre = await response.json();
+              this.modalTitle = "Edit Genre";
+              this.formMethod = "PUT";
+              this.submitButtonText = "Update Genre";
+              this.formData = {
+                namaGenre: genre.nama_genre || ""
+              };
+              this.currentGenreId = genreId;
+              this.showModal = true;
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          // Form submission
+          async submitForm() {
+            try {
+              if (!this.formData.namaGenre.trim()) {
+                throw new Error("Nama genre harus diisi");
+              }
+              const url = this.currentGenreId ? `/admin/genres/${this.currentGenreId}` : "/admin/genres";
+              const method = this.currentGenreId ? "PUT" : "POST";
+              const response = await fetch(url, {
+                method: method,
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json"
+                },
+                body: JSON.stringify({
+                  namaGenre: this.formData.namaGenre.trim()
+                })
+              });
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan response yang valid");
+              }
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error || "Terjadi kesalahan saat menyimpan data");
+              }
+              window.location.reload();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          // Delete methods
+          confirmDelete(genreId, genreName) {
+            this.currentGenreId = genreId;
+            this.deleteGenreName = genreName;
+            this.showDeleteModal = true;
+          },
+          async deleteGenre() {
+            try {
+              const response = await fetch(`/admin/genres/${this.currentGenreId}`, {
+                method: "DELETE",
+                headers: {
+                  Accept: "application/json"
+                }
+              });
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan response yang valid");
+              }
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error || "Gagal menghapus genre");
+              }
+              window.location.reload();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          closeModal() {
+            this.showModal = false;
+            this.formData = {
+              namaGenre: ""
+            };
+            this.currentGenreId = null;
+          },
+          closeDeleteModal() {
+            this.showDeleteModal = false;
+            this.currentGenreId = null;
+            this.deleteGenreName = "";
+          }
+        };
+      }
+      
+      document.addEventListener("DOMContentLoaded", function() {
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+      });
+    </script>
+  </body>
+</html>
