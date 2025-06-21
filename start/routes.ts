@@ -2,6 +2,7 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import Studio from '#models/studio'
 
+
 const AuthController = () => import('#controllers/auth_controller')
 const StudiosController = () => import('#controllers/StudiosController')
 
@@ -33,13 +34,44 @@ router.get('/', ({ response, auth }) => {
   return response.redirect('/login')
 })
 
-router.get('/admin', ({ view }) => {
-  return view.render('admin/page_admin')
-}).as('admin.page').use(middleware.auth())
+
+
+
+
 
 
 
 
 // Studio route - hanya untuk mengambil data
 router.get('/studios', [StudiosController, 'getStudios']).as('studios.get')
+
+
+
+///Untuk seluruh kelola admin
+
+//dari home ke admin
+// router.get('/admin', ({ view }) => {
+//   return view.render('admin/studio-manager')
+// }).as('admin.studio-manager').use(middleware.auth())
+
+
+
+
+
+
+//untuk studio manager CRUD
+// Tambahkan route berikut ke dalam file start/routes.ts
+
+
+// Admin Studio Routes
+const AdminStudioController = () => import('#controllers/AdminStudioController')
+
+router.group(() => {
+  router.get('/studios', [AdminStudioController, 'index']).as('admin.studios.index')
+  router.post('/studios', [AdminStudioController, 'store']).as('admin.studios.store')
+  router.get('/studios/:id', [AdminStudioController, 'show']).as('admin.studios.show')
+  router.put('/studios/:id', [AdminStudioController, 'update']).as('admin.studios.update')
+  router.delete('/studios/:id', [AdminStudioController, 'destroy']).as('admin.studios.destroy')
+}).prefix('/admin')
+
 

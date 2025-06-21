@@ -7,9 +7,9 @@
     "paths": {
       "#app/*": ["app/*"],
       "#config/*": ["config/*"],
-      "#models/*": ["app/Models/*"],
-      "#controllers/*": ["app/Controllers/Http/*"],
-      "#validators/*": ["app/Validators/*"],
+      "#models/*": ["app/models/*"],
+      "#controllers/*": ["app/controllers/Http/*"],
+      "#validators/*": ["app/validators/*"],
       "#views/*": ["resources/views/*"]
     }
   }
