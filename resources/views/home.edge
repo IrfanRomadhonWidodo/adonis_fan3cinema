@@ -11,15 +11,25 @@
     <script src="https://cdn.tailwindcss.com">
       
     </script>
-
-    <!-- Alpine.js -->
+    <!-- Alpine.js CDN -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
       
     </script>
+    <script src="https://unpkg.com/lucide@latest" defer>
+      
+    </script>
   </head>
-  <body class="bg-gray-900 text-white">
 
+  <body class="bg-gray-900 text-white">
     @include('partials/navbar')
     @include('partials/welcome')
+    @include('partials/studio')
+
+    <!-- Inisialisasi ikon Lucide jika digunakan -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typeof lucide !== "undefined") lucide.createIcons();
+      });
+    </script>
   </body>
 </html>

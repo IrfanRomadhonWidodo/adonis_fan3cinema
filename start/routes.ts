@@ -1,7 +1,9 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+import Studio from '#models/studio'
 
 const AuthController = () => import('#controllers/auth_controller')
+const StudiosController = () => import('#controllers/StudiosController')
 
 // Auth routes (hanya untuk guest/belum login)
 router.group(() => {
@@ -15,8 +17,12 @@ router.group(() => {
 router.post('/logout', [AuthController, 'logout']).as('auth.logout').use(middleware.auth())
 
 // Protected routes
-router.get('/home', ({ view, auth }) => {
-  return view.render('home', { user: auth.user })
+router.get('/home', async ({ view, auth }) => {
+  const studios = await Studio.all()
+  return view.render('home', {
+    user: auth.user,
+    studios, 
+  })
 }).as('home').use(middleware.auth())
 
 // Redirect root ke login jika belum login, ke home jika sudah login
@@ -30,4 +36,10 @@ router.get('/', ({ response, auth }) => {
 router.get('/admin', ({ view }) => {
   return view.render('admin/page_admin')
 }).as('admin.page').use(middleware.auth())
+
+
+
+
+// Studio route - hanya untuk mengambil data
+router.get('/studios', [StudiosController, 'getStudios']).as('studios.get')
 

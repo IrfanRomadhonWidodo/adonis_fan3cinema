@@ -2,6 +2,15 @@
   "extends": "@adonisjs/tsconfig/tsconfig.app.json",
   "compilerOptions": {
     "rootDir": "./",
-    "outDir": "./build"
+    "outDir": "./build",
+    "baseUrl": ".", // wajib agar paths dikenali
+    "paths": {
+      "#app/*": ["app/*"],
+      "#config/*": ["config/*"],
+      "#models/*": ["app/Models/*"],
+      "#controllers/*": ["app/Controllers/Http/*"],
+      "#validators/*": ["app/Validators/*"],
+      "#views/*": ["resources/views/*"]
+    }
   }
 }

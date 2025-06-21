@@ -1,0 +1,55 @@
+@if(studios && studios.length > 0)
+  <section class="py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2
+        class="text-3xl font-semibold text-white mb-8 border-b border-gray-700 pb-2 flex items-center gap-2"
+      >
+        <svg
+          class="w-7 h-7 text-blue-400"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+        </svg>
+        Daftar Studio
+      </h2>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        @each(studio in studios)
+          <div
+            class="bg-gray-800 border border-gray-700 rounded-2xl p-6 hover:border-blue-500 hover:shadow-xl transition duration-300 ease-in-out"
+          >
+            <div class="flex items-center gap-4 mb-4">
+              <div class="bg-blue-600 p-3 rounded-full text-white shadow-md">
+                <i class="fas fa-building fa-lg"></i>
+              </div>
+              <div>
+                <h3 class="text-white text-lg font-semibold">
+                  {{ studio.namaStudio }}
+                </h3>
+                <p class="text-sm text-gray-400">
+                  Kapasitas: {{ studio.kapasitas }} orang
+                </p>
+              </div>
+            </div>
+          </div>
+        @endeach
+      </div>
+    </div>
+  </section>
+@else
+  <section class="py-20 text-center text-gray-400">
+    <i class="fas fa-video fa-4x mb-5 text-gray-600"></i>
+    <h3 class="text-2xl font-semibold mb-2 text-white">
+      Tidak ada studio tersedia
+    </h3>
+    <p class="text-sm text-gray-500">
+      Belum ada data studio yang dapat ditampilkan saat ini.
+    </p>
+  </section>
+@endif
