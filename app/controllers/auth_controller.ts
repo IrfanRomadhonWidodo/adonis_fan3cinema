@@ -101,7 +101,11 @@ export default class AuthController {
    */
   async login({ request, response, auth, session }: HttpContext) {
     try {
+      console.log('Login attempt started')
+      
       const { email, password } = request.only(['email', 'password'])
+      
+      console.log('Login data:', { email: email, password: password ? '***' : 'empty' })
 
       // Basic validation
       const errors: Record<string, string> = {}
@@ -113,34 +117,52 @@ export default class AuthController {
       }
 
       // Validate password
-      if (!password) {
+      if (!password || password.trim() === '') {
         errors.password = 'Password wajib diisi'
       }
 
       // If there are validation errors
       if (Object.keys(errors).length > 0) {
+        console.log('Validation errors:', errors)
         session.flash('errors', errors)
         session.flash('old', { email })
         return response.redirect().back()
       }
 
       // Attempt login
-      const user = await User.verifyCredentials(email, password)
-      await auth.use('web').login(user)
-      
-      session.flash('notification', {
-        type: 'success',
-        message: 'Login berhasil! Selamat datang kembali.'
-      })
-      
-      return response.redirect('/home')
+      try {
+        console.log('Attempting to verify credentials...')
+        const user = await User.verifyCredentials(email.toLowerCase(), password)
+        console.log('User found:', { id: user.id, email: user.email })
+        
+        await auth.use('web').login(user)
+        console.log('User logged in successfully')
+        
+        session.flash('notification', {
+          type: 'success',
+          message: 'Login berhasil! Selamat datang kembali.'
+        })
+        
+        return response.redirect('/home')
+        
+      } catch (verifyError) {
+        console.log('Credential verification failed:', verifyError.message)
+        
+        session.flash('notification', {
+          type: 'error',
+          message: 'Email atau password salah.'
+        })
+        
+        session.flash('old', { email })
+        return response.redirect().back()
+      }
 
     } catch (error) {
       console.error('Login error:', error)
       
       session.flash('notification', {
         type: 'error',
-        message: 'Email atau password salah.'
+        message: 'Terjadi kesalahan pada sistem. Silakan coba lagi.'
       })
       
       session.flash('old', { email: request.input('email') })
