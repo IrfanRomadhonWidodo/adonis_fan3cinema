@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Jadwal Manager | Adofan3Cinema
+    </title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com">
+      
+    </script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            spacing: {
+              128: "32rem"
+            }
+          }
+        }
+      };
+    </script>
+
+    <!-- Alpine JS -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
+      
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer>
+      
+    </script>
+
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="flex bg-gray-900 text-white min-h-screen" x-data="jadwalManager()" x-cloak>
+    @include('layouts/sidebar')
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-64 p-8 overflow-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-blue-400 mb-2">
+          Jadwal Manager
+        </h1>
+        <p class="text-gray-400">
+          Kelola jadwal tayang film
+        </p>
+      </div>
+
+      <!-- Add Button -->
+      <div class="mb-6">
+        <button
+          @click="openCreateModal()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center"
+        >
+          <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+          Tambah Jadwal
+      </button>
+      </div>
+
+      <!-- Jadwal Table -->
+      <div class="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
+        <div class="px-8 py-6 border-b border-gray-700">
+          <h2 class="text-2xl font-semibold text-blue-400">
+            Daftar Jadwal Tayang
+          </h2>
+        </div>
+
+        <div class="overflow-x-auto p-4">
+          <table class="w-full text-base">
+            <thead class="bg-gray-700">
+              <tr>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  ID
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Film
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Studio
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Tanggal
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Jam
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Aksi
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+              @each(jadwal in jadwals)
+                <tr class="hover:bg-gray-700">
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ jadwal.id }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap font-medium text-white">
+                    {{ jadwal.film.judul }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ jadwal.studio.nama_studio }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ formatDate(jadwal.tanggal) }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ jadwal.jam }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap font-medium">
+                    <div class="flex space-x-3">
+                      <button
+                        @click="openEditModal({{ jadwal.id }})"
+                        class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg flex items-center"
+                      >
+                        <i data-lucide="edit" class="w-4 h-4 mr-1"></i>Edit
+                    </button>
+                      <button
+                        @click="confirmDelete({{ jadwal.id }}, '{{ jadwal.film.judul }} - {{ jadwal.studio.nama_studio }} - {{ formatDate(jadwal.tanggal) }} {{ jadwal.jam }}')"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center"
+                      >
+                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>Hapus
+                    </button>
+                    </div>
+                  </td>
+                </tr>
+              @else
+                <tr>
+                  <td colspan="6" class="px-8 py-12 text-center text-gray-400">
+                    <i data-lucide="database" class="w-16 h-16 mx-auto mb-4 opacity-50"></i>
+                    <p class="text-lg">
+                      Belum ada jadwal yang terdaftar
+                    </p>
+                  </td>
+                </tr>
+              @endeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Create/Edit Modal -->
+      <div
+        x-show="showModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        x-cloak
+      >
+        <div class="bg-gray-800 p-8 rounded-lg w-full max-w-2xl mx-4 shadow-2xl">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-semibold text-blue-400" x-text="modalTitle">
+            </h3>
+            <button @click="closeModal()" class="text-gray-400 hover:text-white">
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
+
+          <form @submit.prevent="submitForm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Film</label>
+                <select
+                  name="filmId"
+                  x-model="formData.filmId"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                >
+                  <option value="">
+                    Pilih Film
+                  </option>
+                  @each(film in films)
+                    <option value="{{ film.id }}">
+                      {{ film.judul }}
+                    </option>
+                  @endeach
+                </select>
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Studio</label>
+                <select
+                  name="studioId"
+                  x-model="formData.studioId"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                >
+                  <option value="">
+                    Pilih Studio
+                  </option>
+                  @each(studio in studios)
+                    <option value="{{ studio.id }}">
+                      {{ studio.nama_studio }}
+                    </option>
+                  @endeach
+                </select>
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Tanggal</label>
+                <input
+                  type="date"
+                  name="tanggal"
+                  x-model="formData.tanggal"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                />
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Jam</label>
+                <input
+                  type="time"
+                  name="jam"
+                  x-model="formData.jam"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="flex space-x-4 mt-6">
+              <button
+                type="submit"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+                x-text="submitButtonText"
+              ></button>
+              <button
+                type="button"
+                @click="closeModal()"
+                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div
+        x-show="showDeleteModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        x-cloak
+      >
+        <div class="bg-gray-800 p-8 rounded-lg w-full max-w-lg mx-4 shadow-2xl">
+          <div class="text-center">
+            <i data-lucide="alert-triangle" class="w-20 h-20 text-red-500 mx-auto mb-6"></i>
+            <h3 class="text-2xl font-semibold text-white mb-4">
+              Konfirmasi Hapus
+            </h3>
+            <p class="text-gray-300 mb-8 text-lg">
+              Apakah Anda yakin ingin menghapus jadwal <span class="font-semibold text-blue-400" x-text="deleteJadwalName"></span>?
+            <br />
+              <span class="text-red-400">Tindakan ini tidak dapat dibatalkan.</span>
+            </p>
+
+            <div class="flex space-x-4">
+              <button
+                @click="deleteJadwal()"
+                class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Ya, Hapus</button>
+              <button
+                @click="closeDeleteModal()"
+                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Batal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function jadwalManager() {
+        return {
+          showModal: false,
+          showDeleteModal: false,
+          modalTitle: "",
+          formMethod: "POST",
+          submitButtonText: "",
+          deleteJadwalName: "",
+          currentJadwalId: null,
+          formData: {
+            filmId: "",
+            studioId: "",
+            tanggal: "",
+            jam: ""
+          },
+          // Modal methods
+          openCreateModal() {
+            this.modalTitle = "Tambah Jadwal Baru";
+            this.formMethod = "POST";
+            this.submitButtonText = "Tambah Jadwal";
+            this.formData = {
+              filmId: "",
+              studioId: "",
+              tanggal: "",
+              jam: ""
+            };
+            this.currentJadwalId = null;
+            this.showModal = true;
+          },
+          async openEditModal(jadwalId) {
+            try {
+              const response = await fetch(`/admin/jadwals/${jadwalId}`);
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan data JSON yang valid");
+              }
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Gagal mengambil data jadwal");
+              }
+              const jadwal = await response.json();
+              this.modalTitle = "Edit Jadwal";
+              this.formMethod = "PUT";
+              this.submitButtonText = "Update Jadwal";
+              // Format tanggal untuk input date (YYYY-MM-DD)
+              const tanggal = new Date(jadwal.tanggal);
+              const formattedDate = tanggal.toISOString().split("T")[0];
+              this.formData = {
+                filmId: jadwal.film_id || "",
+                studioId: jadwal.studio_id || "",
+                tanggal: formattedDate,
+                jam: jadwal.jam || ""
+              };
+              this.currentJadwalId = jadwalId;
+              this.showModal = true;
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          // Form submission
+          async submitForm() {
+            try {
+              if (!this.formData.filmId) {
+                throw new Error("Film harus dipilih");
+              }
+              if (!this.formData.studioId) {
+                throw new Error("Studio harus dipilih");
+              }
+              if (!this.formData.tanggal) {
+                throw new Error("Tanggal harus diisi");
+              }
+              if (!this.formData.jam) {
+                throw new Error("Jam harus diisi");
+              }
+              const url = this.currentJadwalId ? `/admin/jadwals/${this.currentJadwalId}` : "/admin/jadwals";
+              const method = this.currentJadwalId ? "PUT" : "POST";
+              const response = await fetch(url, {
+                method: method,
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json"
+                },
+                body: JSON.stringify({
+                  filmId: this.formData.filmId,
+                  studioId: this.formData.studioId,
+                  tanggal: this.formData.tanggal,
+                  jam: this.formData.jam
+                })
+              });
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan response yang valid");
+              }
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error || "Terjadi kesalahan saat menyimpan data");
+              }
+              window.location.reload();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          // Delete methods
+          confirmDelete(jadwalId, jadwalName) {
+            this.currentJadwalId = jadwalId;
+            this.deleteJadwalName = jadwalName;
+            this.showDeleteModal = true;
+          },
+          async deleteJadwal() {
+            try {
+              const response = await fetch(`/admin/jadwals/${this.currentJadwalId}`, {
+                method: "DELETE",
+                headers: {
+                  Accept: "application/json"
+                }
+              });
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan response yang valid");
+              }
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error || "Gagal menghapus jadwal");
+              }
+              window.location.reload();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          closeModal() {
+            this.showModal = false;
+            this.formData = {
+              filmId: "",
+              studioId: "",
+              tanggal: "",
+              jam: ""
+            };
+            this.currentJadwalId = null;
+          },
+          closeDeleteModal() {
+            this.showDeleteModal = false;
+            this.currentJadwalId = null;
+            this.deleteJadwalName = "";
+          }
+        };
+      }
+      
+      document.addEventListener("DOMContentLoaded", function() {
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+      });
+    </script>
+  </body>
+</html>

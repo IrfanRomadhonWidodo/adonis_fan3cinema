@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Film Manager | Adofan3Cinema
+    </title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com">
+      
+    </script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            spacing: {
+              128: "32rem"
+            }
+          }
+        }
+      };
+    </script>
+
+    <!-- Alpine JS -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
+      
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer>
+      
+    </script>
+
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="flex bg-gray-900 text-white min-h-screen" x-data="filmManager()" x-cloak>
+    @include('layouts/sidebar')
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-64 p-8 overflow-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-blue-400 mb-2">
+          Film Manager
+        </h1>
+        <p class="text-gray-400">
+          Kelola film bioskop Anda
+        </p>
+      </div>
+
+      <!-- Add Button -->
+      <div class="mb-6">
+        <button
+          @click="openCreateModal()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center"
+        >
+          <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+          Tambah Film
+      </button>
+      </div>
+
+      <!-- Films Table -->
+      <div class="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
+        <div class="px-8 py-6 border-b border-gray-700">
+          <h2 class="text-2xl font-semibold text-blue-400">
+            Daftar Film
+          </h2>
+        </div>
+
+        <div class="overflow-x-auto p-4">
+          <table class="w-full text-base">
+            <thead class="bg-gray-700">
+              <tr>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  ID
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Poster
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Judul
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Sutradara
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Tahun
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Genre
+                </th>
+                <th class="px-8 py-4 text-left font-medium text-gray-300 uppercase tracking-wider">
+                  Aksi
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-700">
+              @each(film in films)
+                <tr class="hover:bg-gray-700">
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ film.id }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap">
+                    <img
+                      src="{{ film.poster_url || 'https://via.placeholder.com/100x150?text=No+Poster' }}"
+                      alt="{{ film.judul }}"
+                      class="w-16 h-24 object-cover rounded"
+                    />
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap font-medium text-white">
+                    {{ film.judul }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ film.sutradara }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ film.tahun }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap text-gray-300">
+                    {{ film.genre.nama_genre }}
+                  </td>
+                  <td class="px-8 py-4 whitespace-nowrap font-medium">
+                    <div class="flex space-x-3">
+                      <button
+                        @click="openEditModal({{ film.id }})"
+                        class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg flex items-center"
+                      >
+                        <i data-lucide="edit" class="w-4 h-4 mr-1"></i>Edit
+                    </button>
+                      <button
+                        @click="confirmDelete({{ film.id }}, '{{ film.judul }}')"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center"
+                      >
+                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>Hapus
+                    </button>
+                    </div>
+                  </td>
+                </tr>
+              @else
+                <tr>
+                  <td colspan="7" class="px-8 py-12 text-center text-gray-400">
+                    <i data-lucide="database" class="w-16 h-16 mx-auto mb-4 opacity-50"></i>
+                    <p class="text-lg">
+                      Belum ada film yang terdaftar
+                    </p>
+                  </td>
+                </tr>
+              @endeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Create/Edit Modal -->
+      <div
+        x-show="showModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        x-cloak
+      >
+        <div class="bg-gray-800 p-8 rounded-lg w-full max-w-2xl mx-4 shadow-2xl">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-semibold text-blue-400" x-text="modalTitle">
+            </h3>
+            <button @click="closeModal()" class="text-gray-400 hover:text-white">
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
+
+          <form @submit.prevent="submitForm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Judul Film</label>
+                <input
+                  type="text"
+                  name="judul"
+                  x-model="formData.judul"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                />
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Sutradara</label>
+                <input
+                  type="text"
+                  name="sutradara"
+                  x-model="formData.sutradara"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                />
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Tahun</label>
+                <input
+                  type="number"
+                  name="tahun"
+                  x-model="formData.tahun"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  min="1900"
+                  max="2100"
+                  required
+                />
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Genre</label>
+                <select
+                  name="genreId"
+                  x-model="formData.genreId"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  required
+                >
+                  <option value="">
+                    Pilih Genre
+                  </option>
+                  @each(genre in genres)
+                    <option value="{{ genre.id }}">
+                      {{ genre.nama_genre }}
+                    </option>
+                  @endeach
+                </select>
+              </div>
+
+              <div class="mb-6 md:col-span-2">
+                <label class="block text-lg font-medium text-gray-300 mb-3">Poster URL (Opsional)</label>
+                <input
+                  type="url"
+                  name="posterUrl"
+                  x-model="formData.posterUrl"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white"
+                  placeholder="https://example.com/poster.jpg"
+                />
+              </div>
+            </div>
+
+            <div class="flex space-x-4 mt-6">
+              <button
+                type="submit"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+                x-text="submitButtonText"
+              ></button>
+              <button
+                type="button"
+                @click="closeModal()"
+                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Confirmation Modal -->
+      <div
+        x-show="showDeleteModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        x-cloak
+      >
+        <div class="bg-gray-800 p-8 rounded-lg w-full max-w-lg mx-4 shadow-2xl">
+          <div class="text-center">
+            <i data-lucide="alert-triangle" class="w-20 h-20 text-red-500 mx-auto mb-6"></i>
+            <h3 class="text-2xl font-semibold text-white mb-4">
+              Konfirmasi Hapus
+            </h3>
+            <p class="text-gray-300 mb-8 text-lg">
+              Apakah Anda yakin ingin menghapus film <span class="font-semibold text-blue-400" x-text="deleteFilmName"></span>?
+            <br />
+              <span class="text-red-400">Tindakan ini tidak dapat dibatalkan.</span>
+            </p>
+
+            <div class="flex space-x-4">
+              <button
+                @click="deleteFilm()"
+                class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Ya, Hapus</button>
+              <button
+                @click="closeDeleteModal()"
+                class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold text-lg"
+              >Batal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function filmManager() {
+        return {
+          showModal: false,
+          showDeleteModal: false,
+          modalTitle: "",
+          formMethod: "POST",
+          submitButtonText: "",
+          deleteFilmName: "",
+          currentFilmId: null,
+          formData: {
+            judul: "",
+            sutradara: "",
+            tahun: "",
+            posterUrl: "",
+            genreId: ""
+          },
+          // Modal methods
+          openCreateModal() {
+            this.modalTitle = "Tambah Film Baru";
+            this.formMethod = "POST";
+            this.submitButtonText = "Tambah Film";
+            this.formData = {
+              judul: "",
+              sutradara: "",
+              tahun: "",
+              posterUrl: "",
+              genreId: ""
+            };
+            this.currentFilmId = null;
+            this.showModal = true;
+          },
+          async openEditModal(filmId) {
+            try {
+              const response = await fetch(`/admin/films/${filmId}`);
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan data JSON yang valid");
+              }
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Gagal mengambil data film");
+              }
+              const film = await response.json();
+              this.modalTitle = "Edit Film";
+              this.formMethod = "PUT";
+              this.submitButtonText = "Update Film";
+              this.formData = {
+                judul: film.judul || "",
+                sutradara: film.sutradara || "",
+                tahun: film.tahun || "",
+                posterUrl: film.poster_url || "",
+                genreId: film.genre_id || ""
+              };
+              this.currentFilmId = filmId;
+              this.showModal = true;
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          // Form submission
+          async submitForm() {
+            try {
+              if (!this.formData.judul.trim()) {
+                throw new Error("Judul film harus diisi");
+              }
+              if (!this.formData.sutradara.trim()) {
+                throw new Error("Sutradara harus diisi");
+              }
+              if (!this.formData.tahun) {
+                throw new Error("Tahun harus diisi");
+              }
+              if (!this.formData.genreId) {
+                throw new Error("Genre harus dipilih");
+              }
+              const url = this.currentFilmId ? `/admin/films/${this.currentFilmId}` : "/admin/films";
+              const method = this.currentFilmId ? "PUT" : "POST";
+              const response = await fetch(url, {
+                method: method,
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json"
+                },
+                body: JSON.stringify({
+                  judul: this.formData.judul.trim(),
+                  sutradara: this.formData.sutradara.trim(),
+                  tahun: this.formData.tahun,
+                  posterUrl: this.formData.posterUrl.trim(),
+                  genreId: this.formData.genreId
+                })
+              });
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan response yang valid");
+              }
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error || "Terjadi kesalahan saat menyimpan data");
+              }
+              window.location.reload();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          // Delete methods
+          confirmDelete(filmId, filmName) {
+            this.currentFilmId = filmId;
+            this.deleteFilmName = filmName;
+            this.showDeleteModal = true;
+          },
+          async deleteFilm() {
+            try {
+              const response = await fetch(`/admin/films/${this.currentFilmId}`, {
+                method: "DELETE",
+                headers: {
+                  Accept: "application/json"
+                }
+              });
+              const contentType = response.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server tidak mengembalikan response yang valid");
+              }
+              const result = await response.json();
+              if (!response.ok) {
+                throw new Error(result.error || "Gagal menghapus film");
+              }
+              window.location.reload();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(`Error: ${error.message}`);
+            }
+          },
+          closeModal() {
+            this.showModal = false;
+            this.formData = {
+              judul: "",
+              sutradara: "",
+              tahun: "",
+              posterUrl: "",
+              genreId: ""
+            };
+            this.currentFilmId = null;
+          },
+          closeDeleteModal() {
+            this.showDeleteModal = false;
+            this.currentFilmId = null;
+            this.deleteFilmName = "";
+          }
+        };
+      }
+      
+      document.addEventListener("DOMContentLoaded", function() {
+        if (typeof lucide !== "undefined") {
+          lucide.createIcons();
+        }
+      });
+    </script>
+  </body>
+</html>

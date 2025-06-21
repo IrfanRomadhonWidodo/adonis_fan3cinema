@@ -85,3 +85,27 @@ router.group(() => {
   router.put('/genres/:id', [AdminGenreController, 'update']).as('admin.genres.update')
   router.delete('/genres/:id', [AdminGenreController, 'destroy']).as('admin.genres.destroy')
 }).prefix('/admin').use(middleware.auth())
+
+
+
+import AdminFilmController from '#controllers/admin_film_controller'
+
+// Tambahkan dalam group admin
+router.group(() => {
+  router.get('/films', [AdminFilmController, 'index']).as('admin.films.index')
+  router.post('/films', [AdminFilmController, 'store']).as('admin.films.store')
+  router.get('/films/:id', [AdminFilmController, 'show']).as('admin.films.show')
+  router.put('/films/:id', [AdminFilmController, 'update']).as('admin.films.update')
+  router.delete('/films/:id', [AdminFilmController, 'destroy']).as('admin.films.destroy')
+}).prefix('/admin').use(middleware.auth())
+
+import AdminJadwalController from '#controllers/admin_jadwal_controller'
+
+// Tambahkan dalam group admin
+router.group(() => {
+  router.get('/jadwals', [AdminJadwalController, 'index']).as('admin.jadwals.index')
+  router.post('/jadwals', [AdminJadwalController, 'store']).as('admin.jadwals.store')
+  router.get('/jadwals/:id', [AdminJadwalController, 'show']).as('admin.jadwals.show')
+  router.put('/jadwals/:id', [AdminJadwalController, 'update']).as('admin.jadwals.update')
+  router.delete('/jadwals/:id', [AdminJadwalController, 'destroy']).as('admin.jadwals.destroy')
+}).prefix('/admin').use(middleware.auth())
