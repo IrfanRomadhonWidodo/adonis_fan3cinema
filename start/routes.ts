@@ -63,8 +63,7 @@ router.get('/studios', [StudiosController, 'getStudios']).as('studios.get')
 // Tambahkan route berikut ke dalam file start/routes.ts
 
 
-// Admin Studio Routes
-const AdminStudioController = () => import('#controllers/AdminStudioController')
+import AdminStudioController from '#controllers/admin_studio_controller'
 
 router.group(() => {
   router.get('/studios', [AdminStudioController, 'index']).as('admin.studios.index')
@@ -73,5 +72,4 @@ router.group(() => {
   router.put('/studios/:id', [AdminStudioController, 'update']).as('admin.studios.update')
   router.delete('/studios/:id', [AdminStudioController, 'destroy']).as('admin.studios.destroy')
 }).prefix('/admin')
-
 

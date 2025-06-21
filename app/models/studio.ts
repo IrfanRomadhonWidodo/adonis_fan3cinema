@@ -7,7 +7,7 @@ export default class Studio extends BaseModel {
   declare id: number
 
   @column()
-  declare namaStudio: string
+  declare nama_studio: string
 
   @column()
   declare kapasitas: number

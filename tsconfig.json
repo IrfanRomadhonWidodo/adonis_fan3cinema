@@ -8,7 +8,7 @@
       "#app/*": ["app/*"],
       "#config/*": ["config/*"],
       "#models/*": ["app/models/*"],
-      "#controllers/*": ["app/controllers/Http/*"],
+      "#controllers/*": ["app/controllers/*"],
       "#validators/*": ["app/validators/*"],
       "#views/*": ["resources/views/*"]
     }
