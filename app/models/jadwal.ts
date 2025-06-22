@@ -40,7 +40,7 @@ export default class Jadwal extends BaseModel {
   declare studio: BelongsTo<typeof Studio>
 
   @hasMany(() => Tiket, {
-    foreignKey: 'jadwal_id'
+    foreignKey: 'jadwalId'
   })
   declare jadwals: HasMany<typeof Tiket>
 

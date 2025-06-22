@@ -1,37 +1,56 @@
 {{-- resources/views/partials/film-schedules-content.edge --}}
 @if((schedules || []).length > 0)
-  <div class="space-y-4">
+  <div class="space-y-4 px-4">
     @each(schedule in (schedules || []))
-      <div class="bg-gray-700 rounded-lg overflow-hidden shadow">
-        <div class="md:flex">
-          <div class="md:w-1/4">
+      <div
+        class="bg-gray-700 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl mx-2"
+      >
+        <div class="flex flex-col sm:flex-row gap-4 p-4">
+          {{-- Poster Section - Smaller size --}}
+          <div class="flex-shrink-0 mx-auto sm:mx-0">
             <img
               src="{{ schedule.film.poster_url || '/images/default-poster.jpg' }}"
               alt="{{ schedule.film.judul }}"
-              class="w-full h-48 md:h-full object-cover"
+              class="w-32 h-48 sm:w-28 sm:h-40 object-cover rounded-lg shadow-md"
             />
           </div>
-          <div class="p-4 md:w-3/4">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="text-xl font-bold text-blue-300">
+
+          {{-- Content Section --}}
+          <div class="flex-grow min-w-0 space-y-3">
+            {{-- Header with title and date --}}
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+              <div class="min-w-0 flex-grow">
+                <h3 class="text-xl sm:text-2xl font-bold text-blue-300 mb-2 truncate">
                   {{ schedule.film.judul }}
                 </h3>
-                <p class="text-blue-200">
+                <span class="inline-block bg-blue-600 text-white text-xs sm:text-sm px-2 py-1 rounded-full">
                   {{ schedule.film.genre.nama_genre }}
-                </p>
+                </span>
               </div>
-              <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+              <span class="bg-gray-600 text-white px-3 py-1 rounded-lg text-sm whitespace-nowrap self-start">
                 {{ schedule.tanggal.toFormat('dd LLL yyyy') }}
               </span>
             </div>
-            <div class="mt-4">
+
+            {{-- Schedule Info --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
               <p class="text-gray-300">
-                <span class="font-semibold">Jam:</span>{{ schedule.jam }}
+                <span class="font-semibold text-blue-200">Jam Tayang:</span>
+                <span class="ml-1">{{ schedule.jam }}</span>
               </p>
-              <p class="text-gray-300 mt-2">
-                <span class="font-semibold">Studio:</span>{{ schedule.studio.nama_studio }}
+              <p class="text-gray-300">
+                <span class="font-semibold text-blue-200">Studio:</span>
+                <span class="ml-1">{{ schedule.studio.nama_studio }}</span>
               </p>
+            </div>
+
+            {{-- Action Button --}}
+            <div class="pt-2">
+              <button
+                class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-200 text-sm font-medium"
+              >
+                Pesan Tiket
+              </button>
             </div>
           </div>
         </div>
@@ -39,9 +58,22 @@
     @endeach
   </div>
 @else
-  <div class="text-center py-8 bg-gray-700 rounded-lg">
-    <p class="text-gray-400">
-      Tidak ada jadwal tayang untuk filter yang dipilih.
+  <div class="text-center py-8 bg-gray-700 rounded-xl mx-4">
+    <div class="mx-auto w-16 h-16 text-gray-400 mb-3">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-gray-300 mb-1">
+      Tidak ada jadwal tayang
+    </h3>
+    <p class="text-gray-400 text-sm">
+      Coba pilih tanggal atau genre yang berbeda
     </p>
   </div>
 @endif

@@ -1,48 +1,88 @@
 {{-- resources/views/partials/film-schedules.edge --}}
-<div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-  <h2 class="text-2xl font-bold text-blue-400 mb-6">
-    Jadwal Tayang Film
-  </h2>
-
-  <form
-    hx-get="{{ route('films.schedules') }}"
-    hx-target="#schedules-results"
-    hx-trigger="submit"
-    class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
-  >
-    <div>
-      <label class="block text-sm font-medium text-blue-200 mb-1">Tanggal</label>
-      <input
-        type="date"
-        name="date"
-        value="{{ input?.date || '' }}"
-        class="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2"
-      />
+<div class="bg-gray-800 rounded-xl shadow-lg mx-4 sm:mx-6 lg:mx-8 max-w-6xl lg:max-w-7xl xl:mx-auto">
+  <div class="p-4 sm:p-6 lg:p-8">
+    <div class="mb-6">
+      <h2 class="text-2xl sm:text-3xl font-bold text-blue-400 mb-2">
+        Jadwal Tayang Film
+      </h2>
+      <p class="text-gray-400 text-sm sm:text-base">
+        Temukan film favorit Anda berdasarkan tanggal dan genre
+      </p>
     </div>
 
-    <div>
-      <label class="block text-sm font-medium text-blue-200 mb-1">Genre</label>
-      <select name="genre" class="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2">
-        <option value="">
-          Semua Genre
-        </option>
-        @each(genre in genres)
-          <option value="{{ genre.id }}" {{ genre.id == (input?.genre || '') ? 'selected' : '' }}>
-            {{ genre.nama_genre }}
-          </option>
-        @endeach
-      </select>
-    </div>
+    <form
+      hx-get="{{ route('films.schedules') }}"
+      hx-target="#schedules-results"
+      hx-trigger="submit"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+    >
+      <div class="sm:col-span-2 lg:col-span-2">
+        <label class="block text-sm font-medium text-blue-200 mb-2">Tanggal</label>
+        <div class="relative">
+          <input
+            type="date"
+            name="date"
+            value="{{ input?.date || '' }}"
+            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-    <div class="flex items-end">
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">
-        Filter
-      </button>
-    </div>
-  </form>
+      <div class="lg:col-span-1">
+        <label class="block text-sm font-medium text-blue-200 mb-2">Genre</label>
+        <div class="relative">
+          <select
+            name="genre"
+            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2.5 text-sm appearance-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">
+              Semua Genre
+            </option>
+            @each(genre in genres)
+              <option value="{{ genre.id }}" {{ genre.id == (input?.genre || '') ? 'selected' : '' }}>
+                {{ genre.nama_genre }}
+              </option>
+            @endeach
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-  {{-- Tempat hasil filter --}}
-  <div id="schedules-results">
-    @include('partials/film-schedules-content')
+      <div class="flex items-end lg:col-span-1">
+        <button
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg transition duration-200 flex items-center justify-center text-sm font-medium"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          Filter
+        </button>
+      </div>
+    </form>
+
+    {{-- Results Container --}}
+    <div id="schedules-results" class="mt-4">
+      @include('partials/film-schedules-content')
+    </div>
   </div>
 </div>
