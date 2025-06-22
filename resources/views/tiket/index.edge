@@ -35,8 +35,24 @@
       };
     </script>
   </head>
-  <body class="bg-gray-900 text-white min-h-screen">
+  <body class=" bg-gray-900 text-white min-h-screen">
     <div class="container mx-auto px-4 py-8">
+      <a
+        href="/home"
+        class="inline-flex items-center gap-2 mb-4 text-blue-400 hover:text-blue-600 transition duration-200"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Kembali ke Beranda
+</a>
+
       <!-- Header -->
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-primary-400 mb-2">
@@ -364,36 +380,36 @@
           document.getElementById("hiddenJumlahTiket").value = jumlah;
           // Update order summary
           document.getElementById("orderSummary").innerHTML = `
-                            <div class="flex justify-between">
-                              <span class="text-gray-400">Film:</span>
-                              <span class="text-white">${currentJadwal.film.judul}</span>
-                            </div>
-                            <div class="flex justify-between">
-                              <span class="text-gray-400">Studio:</span>
-                              <span class="text-white">${currentJadwal.studio.nama}</span>
-                            </div>
-                            <div class="flex justify-between">
-                              <span class="text-gray-400">Tanggal:</span>
-                              <span class="text-white">${new Date(currentJadwal.tanggal).toLocaleDateString("id-ID")}</span>
-                            </div>
-                            <div class="flex justify-between">
-                              <span class="text-gray-400">Jam:</span>
-                              <span class="text-white">${currentJadwal.jam}</span>
-                            </div>
-                            <div class="flex justify-between">
-                              <span class="text-gray-400">Jumlah Tiket:</span>
-                              <span class="text-white">${jumlah} tiket</span>
-                            </div>
-                            <div class="flex justify-between">
-                              <span class="text-gray-400">Harga per tiket:</span>
-                              <span class="text-white">Rp ${hargaTiket.toLocaleString("id-ID")}</span>
-                            </div>
-                            <hr class="border-gray-600 my-2">
-                            <div class="flex justify-between font-bold text-lg">
-                              <span class="text-gray-300">Total Harga:</span>
-                              <span class="text-primary-400">Rp ${total.toLocaleString("id-ID")}</span>
-                            </div>
-                          `;
+                                                                                                                                              <div class="flex justify-between">
+                                                                                                                                                <span class="text-gray-400">Film:</span>
+                                                                                                                                                <span class="text-white">${currentJadwal.film.judul}</span>
+                                                                                                                                              </div>
+                                                                                                                                              <div class="flex justify-between">
+                                                                                                                                                <span class="text-gray-400">Studio:</span>
+                                                                                                                                                <span class="text-white">${currentJadwal.studio.nama}</span>
+                                                                                                                                              </div>
+                                                                                                                                              <div class="flex justify-between">
+                                                                                                                                                <span class="text-gray-400">Tanggal:</span>
+                                                                                                                                                <span class="text-white">${new Date(currentJadwal.tanggal).toLocaleDateString("id-ID")}</span>
+                                                                                                                                              </div>
+                                                                                                                                              <div class="flex justify-between">
+                                                                                                                                                <span class="text-gray-400">Jam:</span>
+                                                                                                                                                <span class="text-white">${currentJadwal.jam}</span>
+                                                                                                                                              </div>
+                                                                                                                                              <div class="flex justify-between">
+                                                                                                                                                <span class="text-gray-400">Jumlah Tiket:</span>
+                                                                                                                                                <span class="text-white">${jumlah} tiket</span>
+                                                                                                                                              </div>
+                                                                                                                                              <div class="flex justify-between">
+                                                                                                                                                <span class="text-gray-400">Harga per tiket:</span>
+                                                                                                                                                <span class="text-white">Rp ${hargaTiket.toLocaleString("id-ID")}</span>
+                                                                                                                                              </div>
+                                                                                                                                              <hr class="border-gray-600 my-2">
+                                                                                                                                              <div class="flex justify-between font-bold text-lg">
+                                                                                                                                                <span class="text-gray-300">Total Harga:</span>
+                                                                                                                                                <span class="text-primary-400">Rp ${total.toLocaleString("id-ID")}</span>
+                                                                                                                                              </div>
+                                                                                                                                            `;
           // Generate and show referral code
           document.getElementById("kodeReferral").textContent = kodeReferral;
           // Show step 2
@@ -426,13 +442,13 @@
           document.getElementById("jadwalId").value = jadwalId;
           // Update jadwal info
           document.getElementById("jadwalInfo").innerHTML = `
-                            <h4 class="font-semibold text-primary-300 mb-2">${data.jadwal.film.judul}</h4>
-                            <p class="text-gray-400 text-sm">Studio: ${data.jadwal.studio.nama}</p>
-                            <p class="text-gray-400 text-sm">Tanggal: ${new Date(data.jadwal.tanggal).toLocaleDateString("id-ID")}</p>
-                            <p class="text-gray-400 text-sm">Jam: ${data.jadwal.jam}</p>
-                            <p class="text-gray-400 text-sm">Tiket tersedia: ${data.tiketTersedia}</p>
-                            <p class="text-gray-400 text-sm">Harga per tiket: Rp ${hargaTiket.toLocaleString("id-ID")}</p>
-                          `;
+                                                                                                                                              <h4 class="font-semibold text-primary-300 mb-2">${data.jadwal.film.judul}</h4>
+                                                                                                                                              <p class="text-gray-400 text-sm">Studio: ${data.jadwal.studio.nama}</p>
+                                                                                                                                              <p class="text-gray-400 text-sm">Tanggal: ${new Date(data.jadwal.tanggal).toLocaleDateString("id-ID")}</p>
+                                                                                                                                              <p class="text-gray-400 text-sm">Jam: ${data.jadwal.jam}</p>
+                                                                                                                                              <p class="text-gray-400 text-sm">Tiket tersedia: ${data.tiketTersedia}</p>
+                                                                                                                                              <p class="text-gray-400 text-sm">Harga per tiket: Rp ${hargaTiket.toLocaleString("id-ID")}</p>
+                                                                                                                                            `;
           // Set max tiket
           document.getElementById("jumlahTiket").max = maxTiket;
           document.getElementById("jumlahTiket").value = 1;

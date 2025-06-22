@@ -26,7 +26,7 @@
       {{-- Menu --}}
       <div class="hidden md:flex gap-8 px-4">
         <a
-          href=""
+          href="home"
           class="relative text-sm font-medium text-gray-300 transition duration-200
                           hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent
                           after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 hover:after:w-full after:transition-all after:duration-300"
@@ -34,30 +34,30 @@
           Home
                 </a>
         <a
-          href=""
+          href="studio"
           class="relative text-sm font-medium text-gray-300 transition duration-200
                           hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent
                           after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 hover:after:w-full after:transition-all after:duration-300"
         >
-          About
-                </a>
+          Studio
+        </a>
         <a
-          href=""
+          href="jadwal-film"
           class="relative text-sm font-medium text-gray-300 transition duration-200
                           hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent
                           after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 hover:after:w-full after:transition-all after:duration-300"
         >
-          Services
-                </a>
+          Jadwal
+        </a>
         @if(auth.user)
           <a
-            href=""
+            href="/admin/tiket"
             class="relative text-sm font-medium text-gray-300 transition duration-200
                               hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent
                               after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 hover:after:w-full after:transition-all after:duration-300"
           >
-            Dashboard
-                    </a>
+            Pesan Tiket
+          </a>
         @endif
         
         @unless(auth.user)
@@ -243,11 +243,17 @@
   >
 
     <div class="py-2">
-      <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Home</a>
-      <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">About</a>
-      <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Services</a>
+      <a href="welcome" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Home</a>
+      <a href="studio" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Studio</a>
+      <a
+        href="jadwal-film"
+        class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white"
+      >Jadwal</a>
       @if(auth.user)
-        <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white">Dashboard</a>
+        <a
+          href="/admin/tiket"
+          class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700 hover:text-white"
+        >Pesan</a>
       @endif
     </div>
   </div>

@@ -22,11 +22,16 @@
 
   <body class="bg-gray-900 text-white">
     @include('partials/navbar')
-    @include('partials/welcome')
-    @include('partials/studio')
-    @include('partials/film-schedules')
-
-    <script  src="https://unpkg.com/htmx.org@1.9.10">
+    <div id="welcome" class="scroll-mt-24">
+      @include('partials/welcome')
+    </div>
+    <div id="studio" class="scroll-mt-24">
+      @include('partials/studio')
+    </div>
+    <div id="jadwal-film" class="scroll-mt-24">
+      @include('partials/film-schedules')
+    </div>
+    <script src="https://unpkg.com/htmx.org@1.9.10">
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof lucide !== "undefined") lucide.createIcons();
       });

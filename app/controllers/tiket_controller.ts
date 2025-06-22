@@ -110,7 +110,7 @@ export default class TiketController {
       session.flash('pembelian_berhasil', true)
       session.flash('detail_pembelian', {
         film: jadwal.film.judul,
-        studio: jadwal.studio?.nama,
+        studio: jadwal.studio?.nama_studio,
         tanggal: jadwal.tanggal.toFormat('dd/MM/yyyy'),
         jam: jadwal.jam,
         jumlahTiket,
