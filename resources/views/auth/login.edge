@@ -86,128 +86,128 @@
 
           <!-- Notification Messages -->
           @if(flashMessages.has('notification'))
-            @set('notification', flashMessages.get('notification'))
-              @if(notification && notification.type && notification.message)
-                <div
-                  class="mb-6 p-4 rounded-lg {{ notification.type === 'error' ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-green-900/50 text-green-300 border border-green-700' }}"
-                >
-                  {{ notification.message }}
-                </div>
-              @endif
-            @endif
-            
-            <!-- Login Form -->
-            <form action="{{ route('auth.login') }}" method="POST" id="loginForm">
-              <!-- CSRF Token (meskipun disabled, tetap ada untuk jaga-jaga) -->
-              @if(csrfField)
-                {{ csrfField() }}
-              @endif
-              
-              <!-- Email Field -->
-              <div class="mb-6">
-                <label for="email" class="block text-sm font-semibold text-gray-200 mb-2">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value="{{ old('email', '') }}"
-                  class="w-full px-4 py-3 bg-gray-700 border {{ flashMessages.has('errors.email') ? 'border-red-500' : 'border-gray-600' }} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                  placeholder="nama@email.com"
-                  required
-                  autocomplete="email"
-                />
-                @if(flashMessages.has('errors.email'))
-                  <p class="text-red-400 text-sm mt-2">
-                    {{ flashMessages.get('errors.email') }}
-                  </p>
-                @endif
-              </div>
-
-              <!-- Password Field -->
-              <div class="mb-8">
-                <label for="password" class="block text-sm font-semibold text-gray-200 mb-2">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  class="w-full px-4 py-3 bg-gray-700 border {{ flashMessages.has('errors.password') ? 'border-red-500' : 'border-gray-600' }} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                  placeholder="Masukkan password"
-                  required
-                  autocomplete="current-password"
-                />
-                @if(flashMessages.has('errors.password'))
-                  <p class="text-red-400 text-sm mt-2">
-                    {{ flashMessages.get('errors.password') }}
-                  </p>
-                @endif
-              </div>
-
-              <!-- Submit Button -->
-              <button
-                type="submit"
-                id="submitBtn"
-                class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transform transition duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:transform-none"
+            {{--  @set('notification', flashMessages.get('notification'))  --}}
+            @if(notification && notification.type && notification.message)
+              <div
+                class="mb-6 p-4 rounded-lg {{ notification.type === 'error' ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-green-900/50 text-green-300 border border-green-700' }}"
               >
-                <span id="btnText">Masuk</span>
-                <span id="btnLoading" class="hidden">
-                  <svg
-                    class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-
-                  </svg>
-                  Memproses...
-              </span>
-              </button>
-            </form>
-
-            <!-- Register Link -->
-            <div class="mt-8 text-center">
-              <p class="text-sm text-gray-400">
-                Belum punya akun? 
-              <a
-                  href="{{ route('auth.register.show') }}"
-                  class="text-blue-400 hover:text-blue-300 font-semibold transition duration-200"
-                >
-                  Daftar di sini
-              </a>
-              </p>
+                {{ notification.message }}
+              </div>
+            @endif
+          @endif
+            
+          <!-- Login Form -->
+          <form action="{{ route('auth.login') }}" method="POST" id="loginForm">
+            <!-- CSRF Token (meskipun disabled, tetap ada untuk jaga-jaga) -->
+            @if(csrfField)
+              {{ csrfField() }}
+            @endif
+              
+            <!-- Email Field -->
+            <div class="mb-6">
+              <label for="email" class="block text-sm font-semibold text-gray-200 mb-2">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ old('email', '') }}"
+                class="w-full px-4 py-3 bg-gray-700 border {{ flashMessages.has('errors.email') ? 'border-red-500' : 'border-gray-600' }} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="nama@email.com"
+                required
+                autocomplete="email"
+              />
+              @if(flashMessages.has('errors.email'))
+                <p class="text-red-400 text-sm mt-2">
+                  {{ flashMessages.get('errors.email') }}
+                </p>
+              @endif
             </div>
+
+            <!-- Password Field -->
+            <div class="mb-8">
+              <label for="password" class="block text-sm font-semibold text-gray-200 mb-2">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="w-full px-4 py-3 bg-gray-700 border {{ flashMessages.has('errors.password') ? 'border-red-500' : 'border-gray-600' }} rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="Masukkan password"
+                required
+                autocomplete="current-password"
+              />
+              @if(flashMessages.has('errors.password'))
+                <p class="text-red-400 text-sm mt-2">
+                  {{ flashMessages.get('errors.password') }}
+                </p>
+              @endif
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              id="submitBtn"
+              class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transform transition duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:transform-none"
+            >
+              <span id="btnText">Masuk</span>
+              <span id="btnLoading" class="hidden">
+                <svg
+                  class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+
+                </svg>
+                Memproses...
+              </span>
+            </button>
+          </form>
+
+          <!-- Register Link -->
+          <div class="mt-8 text-center">
+            <p class="text-sm text-gray-400">
+              Belum punya akun? 
+              <a
+                href="{{ route('auth.register.show') }}"
+                class="text-blue-400 hover:text-blue-300 font-semibold transition duration-200"
+              >
+                Daftar di sini
+              </a>
+            </p>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- JavaScript untuk UX yang lebih baik -->
-      <script>
-        document.getElementById("loginForm").addEventListener("submit", function() {
-          const submitBtn = document.getElementById("submitBtn");
-          const btnText = document.getElementById("btnText");
-          const btnLoading = document.getElementById("btnLoading");
-          // Disable button dan show loading
-          submitBtn.disabled = true;
-          btnText.classList.add("hidden");
-          btnLoading.classList.remove("hidden");
-        });
-        // Auto-focus pada field email jika kosong
-        
-        window.addEventListener("load", function() {
-          const emailField = document.getElementById("email");
-          const passwordField = document.getElementById("password");
-          if (!emailField.value) {
-            emailField.focus();
-          } else {
-            passwordField.focus();
-          }
-        });
-      </script>
-    </body>
-  </html>
+    <!-- JavaScript untuk UX yang lebih baik -->
+    <script>
+      document.getElementById("loginForm").addEventListener("submit", function() {
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
+        const btnLoading = document.getElementById("btnLoading");
+        // Disable button dan show loading
+        submitBtn.disabled = true;
+        btnText.classList.add("hidden");
+        btnLoading.classList.remove("hidden");
+      });
+      // Auto-focus pada field email jika kosong
+      
+      window.addEventListener("load", function() {
+        const emailField = document.getElementById("email");
+        const passwordField = document.getElementById("password");
+        if (!emailField.value) {
+          emailField.focus();
+        } else {
+          passwordField.focus();
+        }
+      });
+    </script>
+  </body>
+</html>
