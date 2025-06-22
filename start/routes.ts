@@ -72,12 +72,7 @@ router.get('/', ({ response, auth }) => {
 // Studio route - hanya untuk mengambil data
 router.get('/studios', [StudiosController, 'getStudios']).as('studios.get')
 
-// Add these to your existing routes
 
-// import FilmsController from '#controllers/film_controller'
-
-// // Film schedules routes
-// router.get('/film/schedules', [FilmsController, 'schedules']).as('films.schedules')
 
 
 

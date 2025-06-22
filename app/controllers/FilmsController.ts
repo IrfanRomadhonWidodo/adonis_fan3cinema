@@ -43,12 +43,12 @@ export default class FilmsController {
 
     console.log('Found schedules:', schedules.length) // Debug log
 
-    return view.render('partials/film-schedules', {
-      dates,
-      genres,
-      schedules: schedules || [],
-      user: auth.user,
-      input: { date, genre },
-    })
+return view.render('partials/film-schedules-content', {
+  schedules: schedules || [],
+  input: { date, genre },
+})
+
+    
   }
+  
 }

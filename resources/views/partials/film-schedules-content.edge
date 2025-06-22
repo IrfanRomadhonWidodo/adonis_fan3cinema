@@ -1,0 +1,47 @@
+{{-- resources/views/partials/film-schedules-content.edge --}}
+@if((schedules || []).length > 0)
+  <div class="space-y-4">
+    @each(schedule in (schedules || []))
+      <div class="bg-gray-700 rounded-lg overflow-hidden shadow">
+        <div class="md:flex">
+          <div class="md:w-1/4">
+            <img
+              src="{{ schedule.film.poster_url || '/images/default-poster.jpg' }}"
+              alt="{{ schedule.film.judul }}"
+              class="w-full h-48 md:h-full object-cover"
+            />
+          </div>
+          <div class="p-4 md:w-3/4">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-bold text-blue-300">
+                  {{ schedule.film.judul }}
+                </h3>
+                <p class="text-blue-200">
+                  {{ schedule.film.genre.nama_genre }}
+                </p>
+              </div>
+              <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                {{ schedule.tanggal.toFormat('dd LLL yyyy') }}
+              </span>
+            </div>
+            <div class="mt-4">
+              <p class="text-gray-300">
+                <span class="font-semibold">Jam:</span>{{ schedule.jam }}
+              </p>
+              <p class="text-gray-300 mt-2">
+                <span class="font-semibold">Studio:</span>{{ schedule.studio.nama_studio }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endeach
+  </div>
+@else
+  <div class="text-center py-8 bg-gray-700 rounded-lg">
+    <p class="text-gray-400">
+      Tidak ada jadwal tayang untuk filter yang dipilih.
+    </p>
+  </div>
+@endif
