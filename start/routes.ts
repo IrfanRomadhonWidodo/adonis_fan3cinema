@@ -75,7 +75,11 @@ router.get('/studios', [StudiosController, 'getStudios']).as('studios.get')
 
 
 
-
+router.group(() => {
+  router.get('/tiket', '#controllers/tiket_controller.index').as('tiket.index')
+  router.post('/tiket/beli', '#controllers/tiket_controller.store').as('tiket.store')
+  router.get('/tiket/jadwal/:id', '#controllers/tiket_controller.getJadwalDetail').as('tiket.jadwal.detail')
+}).prefix('/admin')
 
 
 

@@ -20,7 +20,7 @@ export default class Studio extends BaseModel {
   declare kapasitas: number
 
     @hasMany(() => Jadwal, {
-    foreignKey: 'jadwal_id'
+    foreignKey: 'studio_id'
   })
   declare films: HasMany<typeof Jadwal>
 

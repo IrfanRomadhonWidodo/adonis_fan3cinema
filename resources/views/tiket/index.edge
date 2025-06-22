@@ -1,0 +1,467 @@
+{{-- resources/views/tiket/index.edge --}}
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Pemesanan Tiket - Cinema
+    </title>
+    <script src="https://cdn.tailwindcss.com">
+      
+    </script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                200: "#bfdbfe",
+                300: "#93c5fd",
+                400: "#60a5fa",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                800: "#1e40af",
+                900: "#1e3a8a",
+                950: "#172554"
+              }
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-primary-400 mb-2">
+          Pemesanan Tiket
+        </h1>
+        <p class="text-gray-400">
+          Pilih jadwal film dan pesan tiket Anda hari ini - {{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}
+        </p>
+      </div>
+
+      <!-- Flash Messages -->
+      @if(flashMessages.has('success'))
+        <div class="bg-green-800 border border-green-600 text-green-200 px-4 py-3 rounded mb-6">
+          {{ flashMessages.get('success') }}
+        </div>
+      @endif
+      
+      @if(flashMessages.has('error'))
+        <div class="bg-red-800 border border-red-600 text-red-200 px-4 py-3 rounded mb-6">
+          {{ flashMessages.get('error') }}
+        </div>
+      @endif
+      
+      <!-- Success Purchase Modal -->
+      @if(flashMessages.has('pembelian_berhasil'))
+        <div
+          id="successModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <div class="bg-gray-800 border border-primary-600 rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="text-center">
+              <div class="w-16 h-16 mx-auto bg-green-600 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-green-400 mb-4">
+                Pembelian Berhasil!
+              </h3>
+              <div class="space-y-2 text-left mb-6">
+                {{--  @set('detailPembelian', flashMessages.get('detail_pembelian'))  --}}
+                @if(detailPembelian)
+                  <p>
+                    <span class="text-gray-400">Film:</span>{{ detailPembelian.film }}
+                  </p>
+                  <p>
+                    <span class="text-gray-400">Studio:</span>{{ detailPembelian.studio }}
+                  </p>
+                  <p>
+                    <span class="text-gray-400">Tanggal:</span>{{ detailPembelian.tanggal }}
+                  </p>
+                  <p>
+                    <span class="text-gray-400">Jam:</span>{{ detailPembelian.jam }}
+                  </p>
+                  <p>
+                    <span class="text-gray-400">Jumlah Tiket:</span>{{ detailPembelian.jumlahTiket }}
+                  </p>
+                  <p>
+                    <span class="text-gray-400">Total Harga:</span>Rp {{ detailPembelian.totalHarga.toLocaleString('id-ID') }}
+                  </p>
+                  <div class="bg-primary-900 p-3 rounded mt-4">
+                    <p class="text-primary-300 font-bold">
+                      Kode Referral: {{ detailPembelian.kodeReferral }}
+                    </p>
+                  </div>
+                @endif
+              </div>
+              <button
+                onclick="document.getElementById('successModal').style.display='none'"
+                class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded transition-colors"
+              >
+                Tutup
+                </button>
+            </div>
+          </div>
+        </div>
+      @endif
+        
+      <!-- Jadwal List -->
+      <div class="grid gap-6">
+        @if(jadwals.length > 0)
+          @each(jadwal in jadwals)
+            <div
+              class="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-primary-600 transition-colors"
+            >
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold text-primary-400 mb-2">
+                    {{ jadwal.film.judul }}
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-gray-300">
+                    <div>
+                      <span class="text-gray-500">Studio:</span>
+                      <p class="font-semibold">
+                        {{ jadwal.studio.nama }}
+                      </p>
+                    </div>
+                    <div>
+                      <span class="text-gray-500">Tanggal:</span>
+                      <p class="font-semibold">
+                        {{ new Date(jadwal.tanggal).toLocaleDateString('id-ID') }}
+                      </p>
+                    </div>
+                    <div>
+                      <span class="text-gray-500">Jam Tayang:</span>
+                      <p class="font-semibold">
+                        {{ jadwal.jam }}
+                      </p>
+                    </div>
+                    <div>
+                      <span class="text-gray-500">Tiket Tersedia:</span>
+                      <p class="font-semibold {{ jadwal.tiketTersedia > 0 ? 'text-green-400' : 'text-red-400' }}">
+                        {{ jadwal.tiketTersedia }} tiket
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="ml-6">
+                  @if(jadwal.tiketTersedia > 0)
+                    <button
+                      onclick="openPurchaseModal({{ jadwal.id }})"
+                      class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                    >
+                      Pesan Tiket
+                      </button>
+                  @else
+                    <button disabled class="bg-gray-600 text-gray-400 px-6 py-3 rounded-lg font-semibold cursor-not-allowed">
+                      Sold Out
+                      </button>
+                  @endif
+                </div>
+              </div>
+            </div>
+          @endeach
+        @else
+          <div class="text-center py-12">
+            <div class="text-gray-500 text-6xl mb-4">
+              🎬
+            </div>
+            <h3 class="text-xl font-semibold text-gray-400 mb-2">
+              Tidak ada jadwal hari ini
+            </h3>
+            <p class="text-gray-500">
+              Silakan cek kembali besok untuk jadwal terbaru
+            </p>
+          </div>
+        @endif
+      </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div
+      id="purchaseModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-gray-800 border border-primary-600 rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-primary-400">
+            Pesan Tiket
+          </h3>
+          <button onclick="closePurchaseModal()" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Step 1: Pilih Jumlah Tiket -->
+        <div id="step1" class="step-content">
+          <div class="space-y-4">
+            <div id="jadwalInfo" class="bg-gray-900 p-4 rounded-lg">
+              <!-- Jadwal info will be loaded here -->
+            </div>
+
+            <div>
+              <label for="jumlahTiket" class="block text-sm font-medium text-gray-300 mb-2">
+                Jumlah Tiket
+                </label>
+              <div class="flex items-center space-x-3">
+                <button
+                  type="button"
+                  onclick="decreaseTicket()"
+                  class="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-lg flex items-center justify-center"
+                >
+                  -
+                  </button>
+                <input
+                  type="number"
+                  id="jumlahTiket"
+                  name="jumlahTiket"
+                  min="1"
+                  max="10"
+                  value="1"
+                  class="bg-gray-700 border border-gray-600 text-white text-center w-20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+                <button
+                  type="button"
+                  onclick="increaseTicket()"
+                  class="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-lg flex items-center justify-center"
+                >
+                  +
+                  </button>
+              </div>
+            </div>
+
+            <div class="bg-gray-900 p-4 rounded-lg">
+              <div class="flex justify-between items-center text-lg font-semibold">
+                <span class="text-gray-300">Total Harga:</span>
+                <span id="totalHarga" class="text-primary-400">Rp 0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex space-x-3 mt-6">
+            <button
+              type="button"
+              onclick="closePurchaseModal()"
+              class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold transition-colors"
+            >
+              Batal
+              </button>
+            <button
+              type="button"
+              onclick="nextStep()"
+              class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-lg font-semibold transition-colors"
+            >
+              Selanjutnya
+              </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Konfirmasi Pembelian -->
+        <div id="step2" class="step-content hidden">
+          <form id="purchaseForm" method="POST" action="{{ route('tiket.store') }}">
+            <input type="hidden" id="jadwalId" name="jadwalId" value="" />
+            <input type="hidden" id="hiddenJumlahTiket" name="jumlahTiket" value="" />
+
+            <div class="space-y-4">
+              <div class="bg-gray-900 p-4 rounded-lg">
+                <h4 class="font-semibold text-primary-300 mb-3">
+                  Ringkasan Pemesanan
+                </h4>
+                <div id="orderSummary" class="space-y-2 text-sm">
+                  <!-- Order summary will be loaded here -->
+                </div>
+              </div>
+
+              <div class="bg-primary-900 p-4 rounded-lg">
+                <div class="flex justify-between items-center">
+                  <span class="text-primary-300">Kode Referral:</span>
+                  <span id="kodeReferral" class="text-primary-200 font-mono font-bold"></span>
+                </div>
+              </div>
+
+              <div class="bg-yellow-900 border border-yellow-600 p-4 rounded-lg">
+                <p class="text-yellow-200 text-sm">
+                  <strong>Perhatian:</strong>Simpan kode referral Anda untuk keperluan administrasi tiket.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex space-x-3 mt-6">
+              <button
+                type="button"
+                onclick="prevStep()"
+                class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold transition-colors"
+              >
+                Kembali
+                </button>
+              <button
+                type="submit"
+                class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-lg font-semibold transition-colors"
+              >
+                Beli Tiket
+                </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentJadwal = null;
+      
+      let hargaTiket = 0;
+      
+      let maxTiket = 0;
+      
+      let currentStep = 1;
+      
+      function generateReferralCode() {
+        return Math.random().toString(36).substring(2, 8).toUpperCase();
+      }
+      
+      function updateTotalHarga() {
+        const jumlah = parseInt(document.getElementById("jumlahTiket").value);
+        const total = hargaTiket * jumlah;
+        document.getElementById("totalHarga").textContent = "Rp " + total.toLocaleString("id-ID");
+      }
+      
+      function increaseTicket() {
+        const input = document.getElementById("jumlahTiket");
+        const current = parseInt(input.value);
+        if (current < maxTiket && current < 10) {
+          input.value = current + 1;
+          updateTotalHarga();
+        }
+      }
+      
+      function decreaseTicket() {
+        const input = document.getElementById("jumlahTiket");
+        const current = parseInt(input.value);
+        if (current > 1) {
+          input.value = current - 1;
+          updateTotalHarga();
+        }
+      }
+      
+      function nextStep() {
+        if (currentStep === 1) {
+          const jumlah = parseInt(document.getElementById("jumlahTiket").value);
+          const total = hargaTiket * jumlah;
+          const kodeReferral = generateReferralCode();
+          // Update hidden input
+          document.getElementById("hiddenJumlahTiket").value = jumlah;
+          // Update order summary
+          document.getElementById("orderSummary").innerHTML = `
+                            <div class="flex justify-between">
+                              <span class="text-gray-400">Film:</span>
+                              <span class="text-white">${currentJadwal.film.judul}</span>
+                            </div>
+                            <div class="flex justify-between">
+                              <span class="text-gray-400">Studio:</span>
+                              <span class="text-white">${currentJadwal.studio.nama}</span>
+                            </div>
+                            <div class="flex justify-between">
+                              <span class="text-gray-400">Tanggal:</span>
+                              <span class="text-white">${new Date(currentJadwal.tanggal).toLocaleDateString("id-ID")}</span>
+                            </div>
+                            <div class="flex justify-between">
+                              <span class="text-gray-400">Jam:</span>
+                              <span class="text-white">${currentJadwal.jam}</span>
+                            </div>
+                            <div class="flex justify-between">
+                              <span class="text-gray-400">Jumlah Tiket:</span>
+                              <span class="text-white">${jumlah} tiket</span>
+                            </div>
+                            <div class="flex justify-between">
+                              <span class="text-gray-400">Harga per tiket:</span>
+                              <span class="text-white">Rp ${hargaTiket.toLocaleString("id-ID")}</span>
+                            </div>
+                            <hr class="border-gray-600 my-2">
+                            <div class="flex justify-between font-bold text-lg">
+                              <span class="text-gray-300">Total Harga:</span>
+                              <span class="text-primary-400">Rp ${total.toLocaleString("id-ID")}</span>
+                            </div>
+                          `;
+          // Generate and show referral code
+          document.getElementById("kodeReferral").textContent = kodeReferral;
+          // Show step 2
+          document.getElementById("step1").classList.add("hidden");
+          document.getElementById("step2").classList.remove("hidden");
+          currentStep = 2;
+        }
+      }
+      
+      function prevStep() {
+        if (currentStep === 2) {
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step1").classList.remove("hidden");
+          currentStep = 1;
+        }
+      }
+      
+      async function openPurchaseModal(jadwalId) {
+        try {
+          const response = await fetch(`/admin/tiket/jadwal/${jadwalId}`);
+          const data = await response.json();
+          currentJadwal = data.jadwal;
+          hargaTiket = data.hargaTiket;
+          maxTiket = data.tiketTersedia;
+          // Reset to step 1
+          currentStep = 1;
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step1").classList.remove("hidden");
+          // Set jadwal ID
+          document.getElementById("jadwalId").value = jadwalId;
+          // Update jadwal info
+          document.getElementById("jadwalInfo").innerHTML = `
+                            <h4 class="font-semibold text-primary-300 mb-2">${data.jadwal.film.judul}</h4>
+                            <p class="text-gray-400 text-sm">Studio: ${data.jadwal.studio.nama}</p>
+                            <p class="text-gray-400 text-sm">Tanggal: ${new Date(data.jadwal.tanggal).toLocaleDateString("id-ID")}</p>
+                            <p class="text-gray-400 text-sm">Jam: ${data.jadwal.jam}</p>
+                            <p class="text-gray-400 text-sm">Tiket tersedia: ${data.tiketTersedia}</p>
+                            <p class="text-gray-400 text-sm">Harga per tiket: Rp ${hargaTiket.toLocaleString("id-ID")}</p>
+                          `;
+          // Set max tiket
+          document.getElementById("jumlahTiket").max = maxTiket;
+          document.getElementById("jumlahTiket").value = 1;
+          // Update total harga
+          updateTotalHarga();
+          // Show modal
+          document.getElementById("purchaseModal").classList.remove("hidden");
+        } catch (error) {
+          alert("Gagal memuat detail jadwal");
+        }
+      }
+      
+      function closePurchaseModal() {
+        document.getElementById("purchaseModal").classList.add("hidden");
+        // Reset to step 1
+        currentStep = 1;
+        document.getElementById("step2").classList.add("hidden");
+        document.getElementById("step1").classList.remove("hidden");
+      }
+      // Update total harga when quantity changes
+      
+      document.getElementById("jumlahTiket").addEventListener("input", updateTotalHarga);
+      // Close modal when clicking outside
+      
+      document.getElementById("purchaseModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+          closePurchaseModal();
+        }
+      });
+    </script>
+  </body>
+</html>
