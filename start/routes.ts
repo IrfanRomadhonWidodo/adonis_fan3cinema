@@ -1,6 +1,8 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import Studio from '#models/studio'
+import Film from '#models/film'
+import FilmsController from '#controllers/film_controller'
 
 
 const AuthController = () => import('#controllers/auth_controller')
@@ -14,6 +16,8 @@ router.group(() => {
   router.post('/register', [AuthController, 'register']).as('auth.register')
 }).use(middleware.guest())
 
+
+
 // Logout route (hanya untuk yang sudah login)
 router.post('/logout', [AuthController, 'logout']).as('auth.logout').use(middleware.auth())
 
@@ -22,7 +26,7 @@ router.get('/home', async ({ view, auth }) => {
   const studios = await Studio.all()
   return view.render('home', {
     user: auth.user,
-    studios, 
+    studios,  
   })
 }).as('home').use(middleware.auth())
 
@@ -33,13 +37,6 @@ router.get('/', ({ response, auth }) => {
   }
   return response.redirect('/login')
 })
-
-
-
-
-
-
-
 
 
 // Studio route - hanya untuk mengambil data
@@ -108,4 +105,15 @@ router.group(() => {
   router.get('/jadwals/:id', [AdminJadwalController, 'show']).as('admin.jadwals.show')
   router.put('/jadwals/:id', [AdminJadwalController, 'update']).as('admin.jadwals.update')
   router.delete('/jadwals/:id', [AdminJadwalController, 'destroy']).as('admin.jadwals.destroy')
+}).prefix('/admin').use(middleware.auth())
+
+import AdminTiketController from '#controllers/admin_tiket_controller'
+
+// Tambahkan dalam group admin
+router.group(() => {
+  router.get('/tikets', [AdminTiketController, 'index']).as('admin.tikets.index')
+  router.post('/tikets', [AdminTiketController, 'store']).as('admin.tikets.store')
+  router.get('/tikets/:id', [AdminTiketController, 'show']).as('admin.tikets.show')
+  router.put('/tikets/:id', [AdminTiketController, 'update']).as('admin.tikets.update')
+  router.delete('/tikets/:id', [AdminTiketController, 'destroy']).as('admin.tikets.destroy')
 }).prefix('/admin').use(middleware.auth())

@@ -3,11 +3,14 @@ import {
   BaseModel,
   column,
   belongsTo,
+  hasMany,
 } from '@adonisjs/lucid/orm'
 
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Film from './film.js'
 import Studio from './studio.js'
+import Tiket from './tiket.js'
 
 export default class Jadwal extends BaseModel {
   @column({ isPrimary: true })
@@ -30,6 +33,11 @@ export default class Jadwal extends BaseModel {
 
   @belongsTo(() => Studio)
   declare studio: BelongsTo<typeof Studio>
+
+  @hasMany(() => Tiket, {
+    foreignKey: 'tiket_id'
+  })
+  declare jadwals: HasMany<typeof Tiket>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

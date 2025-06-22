@@ -41,7 +41,7 @@ export default class Film extends BaseModel {
   @hasMany(() => Jadwal, {
     foreignKey: 'jadwal_id'
   })
-  declare films: HasMany<typeof Jadwal>
+  declare jadwals: HasMany<typeof Jadwal>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
