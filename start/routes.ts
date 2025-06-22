@@ -2,18 +2,19 @@ import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import Studio from '#models/studio'
 import Film from '#models/film'
-import FilmsController from '#controllers/film_controller'
+
 
 
 const AuthController = () => import('#controllers/auth_controller')
 const StudiosController = () => import('#controllers/StudiosController')
-
+const FilmsController = () => import('#controllers/FilmsController')
 // Auth routes (hanya untuk guest/belum login)
 router.group(() => {
   router.get('/login', [AuthController, 'showLogin']).as('auth.login.show')
   router.post('/login', [AuthController, 'login']).as('auth.login')
   router.get('/register', [AuthController, 'showRegister']).as('auth.register.show')  
   router.post('/register', [AuthController, 'register']).as('auth.register')
+
 }).use(middleware.guest())
 
 
@@ -21,14 +22,43 @@ router.group(() => {
 // Logout route (hanya untuk yang sudah login)
 router.post('/logout', [AuthController, 'logout']).as('auth.logout').use(middleware.auth())
 
+
+
+
 // Protected routes
 router.get('/home', async ({ view, auth }) => {
   const studios = await Studio.all()
+  const Jadwal = (await import('#models/jadwal')).default
+  const Genre = (await import('#models/genre')).default
+
+  const dates = await Jadwal.query()
+    .distinct('tanggal')
+    .orderBy('tanggal', 'asc')
+    .exec()
+
+  const genres = await Genre.all()
+
+  const schedules = await Jadwal.query()
+    .preload('film', (filmQuery) => {
+      filmQuery.preload('genre')
+    })
+    .preload('studio')
+    .orderBy('tanggal', 'asc')
+    .orderBy('jam', 'asc')
+    .exec()
   return view.render('home', {
     user: auth.user,
-    studios,  
+    studios,
+    dates,        // Tambah ini
+    genres,       // Tambah ini  
+    schedules,    // Tambah ini
+    input: { date: '', genre: '' }  // Tambah ini
   })
 }).as('home').use(middleware.auth())
+
+router.get('/films/schedules', [FilmsController, 'filter']).as('films.schedules').use(middleware.auth())
+
+
 
 // Redirect root ke login jika belum login, ke home jika sudah login
 router.get('/', ({ response, auth }) => {
@@ -42,14 +72,14 @@ router.get('/', ({ response, auth }) => {
 // Studio route - hanya untuk mengambil data
 router.get('/studios', [StudiosController, 'getStudios']).as('studios.get')
 
+// Add these to your existing routes
+
+// import FilmsController from '#controllers/film_controller'
+
+// // Film schedules routes
+// router.get('/film/schedules', [FilmsController, 'schedules']).as('films.schedules')
 
 
-///Untuk seluruh kelola admin
-
-//dari home ke admin
-// router.get('/admin', ({ view }) => {
-//   return view.render('admin/studio-manager')
-// }).as('admin.studio-manager').use(middleware.auth())
 
 
 

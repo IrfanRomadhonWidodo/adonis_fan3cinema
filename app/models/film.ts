@@ -39,7 +39,7 @@ export default class Film extends BaseModel {
   declare genre: BelongsTo<typeof Genre>
 
   @hasMany(() => Jadwal, {
-    foreignKey: 'jadwal_id'
+    foreignKey: 'filmId'
   })
   declare jadwals: HasMany<typeof Jadwal>
 

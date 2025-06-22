@@ -24,9 +24,9 @@
     @include('partials/navbar')
     @include('partials/welcome')
     @include('partials/studio')
-    @include('partials/film-list')
-    <!-- Inisialisasi ikon Lucide jika digunakan -->
-    <script>
+    @include('partials/film-schedules')
+
+    <script  src="https://unpkg.com/htmx.org@1.9.10">
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof lucide !== "undefined") lucide.createIcons();
       });

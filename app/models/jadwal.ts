@@ -28,14 +28,19 @@ export default class Jadwal extends BaseModel {
   @column()
   declare jam: string
 
-  @belongsTo(() => Film)
+  @belongsTo(() => Film, {
+    foreignKey: 'filmId'  // Sesuaikan dengan nama kolom
+  })
   declare film: BelongsTo<typeof Film>
 
-  @belongsTo(() => Studio)
+
+  @belongsTo(() => Studio, {
+    foreignKey: 'studioId'  // Sesuaikan dengan nama kolom
+  })
   declare studio: BelongsTo<typeof Studio>
 
   @hasMany(() => Tiket, {
-    foreignKey: 'tiket_id'
+    foreignKey: 'jadwal_id'
   })
   declare jadwals: HasMany<typeof Tiket>
 

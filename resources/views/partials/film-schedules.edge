@@ -1,0 +1,110 @@
+
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+  <h2 class="text-2xl font-bold text-blue-400 mb-6">
+    Jadwal Tayang Film
+  </h2>
+
+  {{-- Filter Form --}}
+  <!-- Ganti hx-get menjadi: -->
+  <form
+    hx-get="{{ route('films.schedules') }}"
+    hx-target="#schedules-results"
+    hx-trigger="submit, change from:input, change from:select"
+    class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+  >
+    <div>
+      <label class="block text-sm font-medium text-blue-200 mb-1">Tanggal</label>
+      <input
+        type="date"
+        name="date"
+        value="{{ input?.date || '' }}"
+        class="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2"
+        hx-trigger="change delay:300ms"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-blue-200 mb-1">Genre</label>
+      <select
+        name="genre"
+        class="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+        hx-trigger="change delay:300ms"
+      >
+        <option value="">
+          Semua Genre
+        </option>
+
+        @if(genres && genres.length > 0)
+          @each(genre in genres)
+            <option value="{{ genre.id }}" {{ genre.id == (input?.genre || '') ? 'selected' : '' }}>
+              {{ genre.nama_genre }}
+            </option>
+          @endeach
+        @else
+          <option disabled>
+            Tidak ada genre tersedia
+          </option>
+        @endif
+      </select>
+    </div>
+
+    <div class="flex items-end">
+      <button
+        type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200"
+      >
+        Filter
+    </button>
+    </div>
+  </form>
+
+  {{-- Results Container --}}
+  <div id="schedules-results">
+    @if((schedules || []).length > 0)
+      <div class="space-y-4">
+        @each(schedule in (schedules || []))
+          <div class="bg-gray-700 rounded-lg overflow-hidden shadow">
+            <div class="md:flex">
+              <div class="md:w-1/4">
+                <img
+                  src="{{ schedule.film.poster_url || '/images/default-poster.jpg' }}"
+                  alt="{{ schedule.film.judul }}"
+                  class="w-full h-48 md:h-full object-cover"
+                />
+              </div>
+              <div class="p-4 md:w-3/4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="text-xl font-bold text-blue-300">
+                      {{ schedule.film.judul }}
+                    </h3>
+                    <p class="text-blue-200">
+                      {{ schedule.film.genre.nama_genre }}
+                    </p>
+                  </div>
+                  <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                    {{ schedule.tanggal.toFormat('dd LLL yyyy') }}
+                  </span>
+                </div>
+                <div class="mt-4">
+                  <p class="text-gray-300">
+                    <span class="font-semibold">Jam:</span>{{ schedule.jam }}
+                  </p>
+                  <p class="text-gray-300 mt-2">
+                    <span class="font-semibold">Studio:</span>{{ schedule.studio.nama_studio }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endeach
+      </div>
+    @else
+      <div class="text-center py-8 bg-gray-700 rounded-lg">
+        <p class="text-gray-400">
+          Tidak ada jadwal tayang untuk filter yang dipilih.
+        </p>
+      </div>
+    @endif
+  </div>
+</div>
