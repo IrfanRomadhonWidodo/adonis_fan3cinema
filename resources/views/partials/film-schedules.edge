@@ -5,11 +5,10 @@
   </h2>
 
   {{-- Filter Form --}}
-  <!-- Ganti hx-get menjadi: -->
   <form
     hx-get="{{ route('films.schedules') }}"
     hx-target="#schedules-results"
-    hx-trigger="submit, change from:input, change from:select"
+    hx-trigger="submit"
     class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
   >
     <div>
@@ -19,7 +18,6 @@
         name="date"
         value="{{ input?.date || '' }}"
         class="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2"
-        hx-trigger="change delay:300ms"
       />
     </div>
 
@@ -28,22 +26,16 @@
       <select
         name="genre"
         class="w-full bg-gray-700 border border-gray-600 text-white rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
-        hx-trigger="change delay:300ms"
       >
         <option value="">
           Semua Genre
         </option>
-
         @if(genres && genres.length > 0)
           @each(genre in genres)
             <option value="{{ genre.id }}" {{ genre.id == (input?.genre || '') ? 'selected' : '' }}>
               {{ genre.nama_genre }}
             </option>
           @endeach
-        @else
-          <option disabled>
-            Tidak ada genre tersedia
-          </option>
         @endif
       </select>
     </div>
